@@ -13,7 +13,7 @@ func init() {
 
 func main() {
 	http.HandleFunc("/", index)
-	http.HandleFunc("/process", processor)
+	http.HandleFunc("/processor", processor)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -22,7 +22,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func processor(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+	if r.Method != "POST" {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -32,7 +32,15 @@ func processor(w http.ResponseWriter, r *http.Request) {
 	laster := r.FormValue("laster")
 
 	// process form values
+	d := struct {
+		Firster string
+		Laster  string
+	}{
+		Firster: firster,
+		Laster:  laster,
+	}
 
-	// display form values
-	tpl.ExecuteTemplate(w, "processor.gohtml", firster, laster)
+	// render template
+	tpl.ExecuteTemplate(w, "processor.gohtml", d)
+
 }
